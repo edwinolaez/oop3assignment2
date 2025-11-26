@@ -100,7 +100,7 @@ public class MyStack<E> implements StackADT<E>
     @Override
     public boolean contains(E toFind) throws NullPointerException {
         if (toFind == null) {
-            throw new NullPointerException("Cannot search for null element");
+            throw new NullPointerException("Search element cannot be null");
         }
         return list.contains(toFind);
     }
@@ -111,9 +111,10 @@ public class MyStack<E> implements StackADT<E>
             return -1;
         }
 
-        for (int i = list.size() - 1; i >= 0; i--) {
+        int stackSize = list.size();
+        for (int i = stackSize - 1; i >= 0; i--) {
             if (toFind.equals(list.get(i))) {
-                return list.size() - i;
+                return stackSize - i;
             }
         }
         return -1;
@@ -130,18 +131,18 @@ public class MyStack<E> implements StackADT<E>
             return false;
         }
 
-        Iterator<E> thisIter = this.iterator();
-        Iterator<E> thatIter = that.iterator();
+        Iterator<E> currentIter = this.iterator();
+        Iterator<E> otherIter = that.iterator();
 
-        while (thisIter.hasNext() && thatIter.hasNext()) {
-            E thisElem = thisIter.next();
-            E thatElem = thatIter.next();
+        while (currentIter.hasNext() && otherIter.hasNext()) {
+            E currentElement = currentIter.next();
+            E otherElement = otherIter.next();
 
-            if (thisElem == null && thatIter.hasNext()) {
+            if (currentElement == null && otherIter.hasNext()) {
                 continue;
             }
 
-            if (thisElem == null || !thisElem.equals(thatElem)) {
+            if (currentElement == null || !currentElement.equals(otherElement)) {
                 return false;
             }
         }
@@ -154,18 +155,18 @@ public class MyStack<E> implements StackADT<E>
     }
 
     /**
-     * Iterator implementation for traversing the stack from top to bottom.
+     * Iterator for traversing stack elements from top to bottom.
      */
     private class StackIterator implements Iterator<E> {
-        private int position;
+        private int currentPosition;
 
         public StackIterator() {
-            position = list.size() - 1;
+            currentPosition = list.size() - 1;
         }
 
         @Override
         public boolean hasNext() {
-            return position >= 0;
+            return currentPosition >= 0;
         }
 
         @Override
@@ -173,7 +174,7 @@ public class MyStack<E> implements StackADT<E>
             if (!hasNext()) {
                 throw new java.util.NoSuchElementException();
             }
-            return list.get(position--);
+            return list.get(currentPosition--);
         }
     }
 }
