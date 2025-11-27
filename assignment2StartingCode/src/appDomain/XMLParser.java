@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import exceptions.EmptyQueueException;
+import exceptions.EmptyStackException;
 import implementations.MyQueue;
 import implementations.MyStack;
 
@@ -20,9 +21,10 @@ public class XMLParser
 	 * Main method to run the parser from command line.
 	 * 
 	 * @param args Command line arguments. First argument should be XML File path.
+	 * @throws EmptyStackException 
 	 */
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws EmptyStackException {
 		if(args.length == 0) {
 			System.out.println("Usage: java -jar Parser.jar <xml-file-path>");
 			return;
@@ -42,9 +44,10 @@ public class XMLParser
 	 * parses the specified XML file and reports errors
 	 * 
 	 * @param filePath
+	 * @throws EmptyStackException 
 	 */
 	
-	public void parseFile(String filePath) {
+	public void parseFile(String filePath) throws EmptyStackException {
 		File file = new File(filePath);
 		
 		if (!file.exists()) {
@@ -84,16 +87,17 @@ public class XMLParser
 	 * @param line
 	 * @param lineNumber
 	 * @param hasRoot
+	 * @throws EmptyStackException 
 	 */
 	
-	private void processLine(String line, int lineNumber, boolean hasRoot) {
+	private void processLine(String line, int lineNumber, boolean hasRoot) throws EmptyStackException {
 		Pattern pattern = Pattern.compile("</?[^>]+>");
 		Matcher matcher = pattern.matcher(line);
 		
 		while (matcher.find()) {
 			String tagText = matcher.group();
 			
-			if (tagText.startsWith("<?") && tagText.endsWith("?>")) {
+			if (tagText.startsWith("<?") && tagText.endsWith("?>")) {	
 				continue;
 			}
 			
@@ -112,9 +116,10 @@ public class XMLParser
 	/**
 	 * 
 	 * @param endTag
+	 * @throws EmptyStackException 
 	 */
 	
-	private void handleEndTag(XMLTag endTag) {
+	private void handleEndTag(XMLTag endTag) throws EmptyStackException {
 		try  {
 			if (!stack.isEmpty()) {
 				XMLTag top = stack.peek();
@@ -162,9 +167,10 @@ public class XMLParser
 	 * adding them to errorQ and reporting each as an error.
 	 * 
 	 * @param endTag
+	 * @throws EmptyStackException 
 	 */
 	
-	private void popUntilMatch(XMLTag endTag) {
+	private void popUntilMatch(XMLTag endTag) throws EmptyStackException {
 		while (!stack.isEmpty()) {
 			XMLTag top = stack.pop();
 			if (endTag.matches(top)) {
@@ -176,7 +182,7 @@ public class XMLParser
 			printErrorLine(top);
 			}
 		}
-	private void processRemainingErrors() {
+	private void processRemainingErrors() throws EmptyStackException {
 		while (!stack.isEmpty()) {
 			XMLTag tag = stack.pop();
 			errorQ.enqueue(tag);
