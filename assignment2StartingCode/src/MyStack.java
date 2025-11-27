@@ -96,82 +96,85 @@ public class MyStack<E> implements StackADT<E>
 		
 		return result;
 	}
-	
-	@Override
-	public boolean contains (E toFind) throws NullPointerException {
-		if (toFind == null) {
-			throw new NullPointerException();
-		}
-		return list.contains(toFind);
-	}
-	
-	@Override 
-	public int search(E toFind) {
-		if (toFind == null) {
-			return -1;
-		}
-		
-		for (int i= list.size() -1; i >= 0; i--) {
-			if (toFind.equals(list.get(i))) {
-				return list.size() -i;
-			}
-		}
-		return -1;
-	}
-	
-	@Override
-	public Iterator<E> iterator() {
-		return new StackIterator();
-	}
-	
-	@Override
-	public boolean equals(StackADT<E> that) {
-		if (that == null || this.size() != that.size()) {
-			return false;
-		}
-		
-		Iterator<E> thisIter = this.iterator();
-		Iterator<E> thatIter = that.iterator();
-		
-		while (thisIter.hasNext() && thatIter.hasNext()) {
-			E thisElem = thisIter.next();
-			E thatElem = thatIter.next();
-			
-			if(thisElem == null && thatIter.hasNext()) {
-				continue;
-			}
-			
-			if (thisElem == null || !thisElem.equals(thatElem) ) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	@Override
-	public boolean stackOverflow() {
-		return false;
-	}
-	
-	private class StackIterator implements Iterator<E> {
-		private int position;
-		
-		public StackIterator() {
-			position = list.size() -1;
-		}
-		
-		@Override
-		public boolean hasNext() {
-			return position >= 0;
-		}
-	
-		
-		@Override
-		public E next() throws java.util.NoSuchElementException {
-			if (!hasNext()) {
-				throw new java.util.NoSuchElementException();
-			}
-			return list.get(position--);
-		}
-	}
-} 
+
+    @Override
+    public boolean contains(E toFind) throws NullPointerException {
+        if (toFind == null) {
+            throw new NullPointerException("Search element cannot be null");
+        }
+        return list.contains(toFind);
+    }
+
+    @Override
+    public int search(E toFind) {
+        if (toFind == null) {
+            return -1;
+        }
+
+        int stackSize = list.size();
+        for (int i = stackSize - 1; i >= 0; i--) {
+            if (toFind.equals(list.get(i))) {
+                return stackSize - i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new StackIterator();
+    }
+
+    @Override
+    public boolean equals(StackADT<E> that) {
+        if (that == null || this.size() != that.size()) {
+            return false;
+        }
+
+        Iterator<E> currentIter = this.iterator();
+        Iterator<E> otherIter = that.iterator();
+
+        while (currentIter.hasNext() && otherIter.hasNext()) {
+            E currentElement = currentIter.next();
+            E otherElement = otherIter.next();
+
+            if (currentElement == null && otherIter.hasNext()) {
+                continue;
+            }
+
+            if (currentElement == null || !currentElement.equals(otherElement)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean stackOverflow() {
+        return false;
+    }
+
+    /**
+     * Iterator for traversing stack elements from top to bottom.
+     */
+    private class StackIterator implements Iterator<E> {
+        private int currentPosition;
+
+        public StackIterator() {
+            currentPosition = list.size() - 1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentPosition >= 0;
+        }
+
+        @Override
+        public E next() throws java.util.NoSuchElementException {
+            if (!hasNext()) {
+                throw new java.util.NoSuchElementException();
+            }
+            return list.get(currentPosition--);
+        }
+    }
+}
