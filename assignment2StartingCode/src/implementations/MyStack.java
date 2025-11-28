@@ -1,6 +1,7 @@
 package implementations;
 
-import exceptions.EmptyStackException;
+import java.util.EmptyStackException;
+
 import utilities.Iterator;
 import utilities.StackADT;
 
@@ -48,7 +49,7 @@ public class MyStack<E> implements StackADT<E>
     @Override
     public E pop() throws EmptyStackException {
         if (isEmpty()) {
-            throw new EmptyStackException("Stack is empty");
+            throw new EmptyStackException();
         }
         return list.remove(list.size() - 1);
     }
@@ -62,7 +63,7 @@ public class MyStack<E> implements StackADT<E>
     @Override
     public E peek() throws EmptyStackException {
         if (isEmpty()) {
-            throw new EmptyStackException("Stack is empty");
+            throw new EmptyStackException(); // no message
         }
         return list.get(list.size() - 1);
     }
